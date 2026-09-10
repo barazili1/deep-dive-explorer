@@ -12,7 +12,7 @@ export function DragonMark({ className, size = 40 }: { className?: string; size?
       alt={BRAND}
       width={size}
       height={size}
-      className={cn("drop-shadow-[0_0_16px_oklch(0.7_0.26_25/90%)]", className)}
+      className={cn("drop-shadow-[0_0_16px_var(--primary)]", className)}
       style={{ width: size, height: size }}
     />
   );
@@ -41,7 +41,7 @@ export function BackButton({ className }: { className?: string }) {
 
 export function TopBar({ title, right }: { title: string; right?: React.ReactNode }) {
   return (
-    <header className="glass sticky top-0 z-40 flex items-center justify-between gap-2 px-3 py-2.5">
+    <header className="glass sticky top-0 z-40 flex items-center justify-between gap-2 border-x-0 border-t-0 px-3 py-3">
       <div className="flex items-center gap-2">
         <BackButton />
         <DragonMark size={26} />
@@ -70,7 +70,7 @@ export function OnlineUsers() {
   );
 }
 
-const COUNT = 70;
+const COUNT = 80;
 
 export function Particles() {
   const ref = useRef<HTMLCanvasElement | null>(null);
@@ -105,6 +105,7 @@ export function Particles() {
     window.addEventListener("resize", resize);
 
     let raf = 0;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const draw = () => {
       ctx.clearRect(0, 0, w, h);
       for (const p of pts) {
@@ -114,14 +115,16 @@ export function Particles() {
         if (p.y < 0 || p.y > 1) p.vy *= -1;
       }
       for (let i = 0; i < pts.length; i++) {
-        const a = pts[i]!;
+        const a = pts[i];
+        if (!a) continue;
         for (let j = i + 1; j < pts.length; j++) {
-          const b = pts[j]!;
+          const b = pts[j];
+          if (!b) continue;
           const dx = (a.x - b.x) * w;
           const dy = (a.y - b.y) * h;
           const d = Math.hypot(dx, dy);
           if (d < 120) {
-            ctx.strokeStyle = `rgba(255,45,45,${(1 - d / 120) * 0.28})`;
+            ctx.strokeStyle = `rgba(155,219,0,${(1 - d / 120) * 0.25})`;
             ctx.lineWidth = 0.7;
             ctx.beginPath();
             ctx.moveTo(a.x * w, a.y * h);
@@ -131,15 +134,15 @@ export function Particles() {
         }
       }
       ctx.shadowBlur = 8;
-      ctx.shadowColor = "rgba(255,60,60,0.9)";
-      ctx.fillStyle = "rgba(255,90,80,0.9)";
+      ctx.shadowColor = "rgba(155,219,0,0.9)";
+      ctx.fillStyle = "rgba(155,219,0,0.92)";
       for (const p of pts) {
         ctx.beginPath();
         ctx.arc(p.x * w, p.y * h, p.r, 0, Math.PI * 2);
         ctx.fill();
       }
       ctx.shadowBlur = 0;
-      raf = requestAnimationFrame(draw);
+      if (!reduceMotion) raf = requestAnimationFrame(draw);
     };
     draw();
 

@@ -140,7 +140,9 @@ function ConditionsPage() {
 
   useEffect(() => {
     if (!loading || !game) return undefined;
-    const to = GAMES.find((g) => g.id === game)!.to;
+    const selectedGame = GAMES.find((g) => g.id === game);
+    if (!selectedGame) return undefined;
+    const to = selectedGame.to;
     const t = setTimeout(() => navigate({ to }), 4000);
     return () => clearTimeout(t);
   }, [loading, game, navigate]);
@@ -157,35 +159,32 @@ function ConditionsPage() {
   };
 
   return (
-    <main className="page-bg relative min-h-screen pb-28">
+    <main className="page-bg screen-frame relative min-h-screen pb-28">
       <Particles />
       <div className="relative z-10">
         <TopBar title="شروط التفعيل" right={<OnlineUsers />} />
 
         {/* Hero */}
-        <section className="animate-rise relative mx-4 mt-4 overflow-hidden rounded-[28px] border border-primary/25">
+        <section className="animate-rise relative mx-auto mt-5 max-w-3xl overflow-hidden border-y border-primary/25 md:border-x">
           <img
             src={casinoBg}
             alt=""
             aria-hidden
-            className="absolute inset-0 h-full w-full object-cover opacity-25"
+            className="absolute inset-0 h-full w-full object-cover opacity-15 grayscale"
           />
           <span
             aria-hidden
             className="absolute inset-0"
             style={{
               background:
-                "linear-gradient(180deg, oklch(0.07 0.02 25 / 55%), oklch(0.07 0.02 25 / 92%))",
+                "linear-gradient(180deg, color-mix(in oklab,var(--background) 55%,transparent), var(--background))",
             }}
           />
           <span
             aria-hidden
-            className="animate-scan pointer-events-none absolute inset-x-0 h-16 opacity-40"
-            style={{
-              background: "linear-gradient(180deg,transparent,oklch(0.65 0.24 25 / 35%),transparent)",
-            }}
+              className="animate-scan pointer-events-none absolute inset-x-0 h-16 bg-gradient-to-b from-transparent via-primary/20 to-transparent opacity-50"
           />
-          <div className="relative flex flex-col items-center px-5 py-7 text-center">
+          <div className="relative flex flex-col items-center px-5 py-10 text-center">
             <div className="relative flex h-[96px] w-[96px] items-center justify-center">
               <span className="ring-conic animate-spin-slow absolute inset-0 rounded-full" />
               <span className="absolute inset-3 rounded-full border border-dashed border-primary/25" />
@@ -241,7 +240,7 @@ function ConditionsPage() {
         </section>
 
         {/* Steps */}
-        <section className="mt-6 px-4">
+        <section className="mx-auto mt-8 max-w-3xl px-4">
           <ul className="flex flex-col">
             <Step
               n={1}
@@ -397,7 +396,8 @@ function ConditionsPage() {
       </div>
 
       {/* sticky CTA */}
-      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-primary/20 bg-background/70 px-4 pb-4 pt-3 backdrop-blur-xl">
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-primary/25 bg-background/85 px-4 pb-4 pt-3 backdrop-blur-xl">
+        <div className="mx-auto max-w-3xl">
         <button
           onClick={() => {
             if (!ready) return;
@@ -415,6 +415,7 @@ function ConditionsPage() {
             <Lock className="h-3 w-3" /> الزر يتفعل بعد إدخال الـ ID واختيار اللعبة
           </p>
         )}
+        </div>
       </div>
 
       {loading && (
